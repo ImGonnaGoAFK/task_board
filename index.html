@@ -22,9 +22,40 @@
   </header>
   <div class="container">
     <div class="text-center mb-5">
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
+      <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal" id="addTask">Add Task</button> -->
+      <button id="create-task">Add Task</button>
     </div>
     <!-- Todo: Create a modal with a form to add tasks -->
+      <div id="dialog-form" title="Create new user">
+        <p class="validateTips">All form fields are required.</p>
+       
+        <form>
+          <fieldset>
+            <label for="task">Task</label>
+            <input type="text" name="task" id="task" placeholder="Javascript" class="text ui-widget-content ui-corner-all">
+            <label for="dueDate">Due Date</label>
+            <input type="date" name="dueDate" id="dueDate" class="text ui-widget-content ui-corner-all">
+            <label for="description">Discription</label>
+            <input type="textbox" name="description" id="discription" placeholder="Describe your project" class="text ui-widget-content ui-corner-all">
+       
+            <!-- Allow form submission with keyboard without duplicating the dialog button -->
+            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+          </fieldset>
+        </form>
+      </div>
+     
+      <!-- <form>
+        <fieldset>
+          <label for="task">Task</label>
+          <input type="text" name="task" id="task" value="Javascript" class="text ui-widget-content ui-corner-all">
+          <label for="dueDate">Due Date</label>
+          <input type="date" name="dueDate" id="dueDate" value="2024-05-05" class="text ui-widget-content ui-corner-all">
+          <label for="taskDescription">Description</label>
+          <input type="text" name="taskDescription" id="taskDescription" value="Description" class="text ui-widget-content ui-corner-all">
+          <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+      </form> 
+    </div> -->
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">
         <div id="to-do" class="card border-light mb-3 lane flex-grow-1">
@@ -68,6 +99,8 @@
     integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
 
   <script src="./assets/js/script.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
 </body>
 
 </html>
