@@ -1,18 +1,80 @@
 // Retrieve tasks and nextId from localStorage
-function readTasksFromStorage () {
-let taskList = JSON.parse(localStorage.getItem("tasks"));
+let taskList = [JSON.parse(localStorage.getItem("tasks"))];
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
-if (!taskList) {
-    taskList = [];
-}
-if (!nextId) {
-    nextId = [];
-}
+$( function() {
+    var dialog, form,
+ 
+      task = $("#task"),
+      dueDate = $("#dueDate"),
+      description = $( "#description" ),
+      allFields = $( [] ).add( task ).add( dueDate ).add( description ),
+      tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+ 
+    function addTask() {
+        let filledInput = true;
+        if ((task.val === "") || (dueDate.val === "") || (description.val === "")) {
+            alert("please make sure all fields are filled in."); 
+            filledInput = false;
+        }
+        else {
+            filledInput = true;
+        }
 
-return taskList;
-}
-const addTaskBtn = $('#addTask')
+        let taskEntry = {
+            task: $('#task').val(),
+            dueDate: $('#dueDate').val(),
+            description: $('#discription').val(),
+        };
+        
+        $('#task').value = '';
+        $('dueDate').value ='';
+        $('#discription').value ='';
+        console.log(taskEntry);
+        if (filledInput) {
+            taskList.push(taskEntry);
+            localStorage.setItem('tasks', JSON.stringify(taskEntry));
+            dialog.dialog("close");
+        }
+    }
+ 
+    dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Create a task": addTask,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      addTask();
+    });
+ 
+    $( "#create-task" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
 
 
 // Todo: create a function to generate a unique task id
@@ -52,191 +114,8 @@ function renderTaskList() {
 
 
 // Todo: create a function to handle adding a new task
-// function handleAddTask(event){
-//     event.preventDefault;
-//     $( function() {
-//         var dialog, form,
-     
-//           task = $( "#task" ),
-//           dueDate = $( "#dueDate" ),
-//           taskDescription = $( "#taskDescription" ),
-//           allFields = $( [] ).add( task ).add( dueDate ).add( taskDescription ),
-//           tips = $( ".validateTips" );
-     
-//         function updateTips( t ) {
-//           tips
-//             .text( t )
-//             .addClass( "ui-state-highlight" );
-//           setTimeout(function() {
-//             tips.removeClass( "ui-state-highlight", 1500 );
-//           }, 500 );
-//         }
-     
-//         function checkLength( o, n, min, max ) {
-//           if ( o.val().length > max || o.val().length < min ) {
-//             o.addClass( "ui-state-error" );
-//             updateTips( "Length of " + n + " must be between " +
-//               min + " and " + max + "." );
-//             return false;
-//           } else {
-//             return true;
-//           }
-//         }
-     
-//         function checkRegexp( o, regexp, n ) {
-//           if ( !( regexp.test( o.val() ) ) ) {
-//             o.addClass( "ui-state-error" );
-//             updateTips( n );
-//             return false;
-//           } else {
-//             return true;
-//           }
-//         }
-     
-//         function addTask() {
-//           var valid = true;
-//           allFields.removeClass( "ui-state-error" );
-     
-//           valid = valid && checkLength( task, "task", 3, 16 );
-//           valid = valid && checkLength( dueDate, "dueDate", 6, 80 );
-//           valid = valid && checkLength( taskDescription, "taskDescription", 5, 16 );
-     
-//           valid = valid && checkRegexp( task, /^[a-z]([0-9a-z_\s])+$/i, "Task may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-//           valid = valid && checkRegexp( dueDate, "eg. ui@jquery.com" );
-//           valid = valid && checkRegexp( taskDescription, /^([0-9a-zA-Z])+$/, "Description field only allow : a-z 0-9" );
-     
-//           if ( valid ) {
-//             $( "#users tbody" ).append( "<tr>" +
-//               "<td>" + task.val() + "</td>" +
-//               "<td>" + dueDate.val() + "</td>" +
-//               "<td>" + taskDescription.val() + "</td>" +
-//             "</tr>" );
-//             dialog.dialog( "close" );
-//           }
-//           return valid;
-//         }
-     
-//         dialog = $( "#dialog-form" ).dialog({
-//           autoOpen: false,
-//           height: 400,
-//           width: 350,
-//           modal: true,
-//           buttons: {
-//             "Create a task": addTask,
-//             Cancel: function() {
-//               dialog.dialog( "close" );
-//             }
-//           },
-//           close: function() {
-//             form[ 0 ].reset();
-//             allFields.removeClass( "ui-state-error" );
-//           }
-//         });
-     
-//         form = dialog.find( "form" ).on( "submit", function( event ) {
-//           event.preventDefault();
-//           addTask();
-//         });
-     
-//         $( "#create-task" ).button().on( "click", function() {
-//           dialog.dialog( "open" );
-//         });
-//       } );
-// };
-
-// $('#addTask').on('click', handleAddTask);
-
-
-  $( function() {
-    var dialog, form,
- 
-      // From https://html.spec.whatwg.org/multipage/input.html#e-mail-state-%28type=email%29
-      emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-      name = $( "#name" ),
-      email = $( "#email" ),
-      password = $( "#password" ),
-      allFields = $( [] ).add( name ).add( email ).add( password ),
-      tips = $( ".validateTips" );
- 
-    function updateTips( t ) {
-      tips
-        .text( t )
-        .addClass( "ui-state-highlight" );
-      setTimeout(function() {
-        tips.removeClass( "ui-state-highlight", 1500 );
-      }, 500 );
-    }
- 
-    function checkLength( o, n, min, max ) {
-      if ( o.val().length > max || o.val().length < min ) {
-        o.addClass( "ui-state-error" );
-        updateTips( "Length of " + n + " must be between " +
-          min + " and " + max + "." );
-        return false;
-      } else {
-        return true;
-      }
-    }
- 
-    function checkRegexp( o, regexp, n ) {
-      if ( !( regexp.test( o.val() ) ) ) {
-        o.addClass( "ui-state-error" );
-        updateTips( n );
-        return false;
-      } else {
-        return true;
-      }
-    }
- 
-    function addUser() {
-      var valid = true;
-      allFields.removeClass( "ui-state-error" );
- 
-      valid = valid && checkLength( name, "username", 3, 16 );
-      valid = valid && checkLength( email, "email", 6, 80 );
-      valid = valid && checkLength( password, "password", 5, 16 );
- 
-      valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-      valid = valid && checkRegexp( email, emailRegex, "eg. ui@jquery.com" );
-      valid = valid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
- 
-      if ( valid ) {
-        $( "#users tbody" ).append( "<tr>" +
-          "<td>" + name.val() + "</td>" +
-          "<td>" + email.val() + "</td>" +
-          "<td>" + password.val() + "</td>" +
-        "</tr>" );
-        dialog.dialog( "close" );
-      }
-      return valid;
-    }
- 
-    dialog = $( "#dialog-form" ).dialog({
-      autoOpen: false,
-      height: 400,
-      width: 350,
-      modal: true,
-      buttons: {
-        "Create an account": addUser,
-        Cancel: function() {
-          dialog.dialog( "close" );
-        }
-      },
-      close: function() {
-        form[ 0 ].reset();
-        allFields.removeClass( "ui-state-error" );
-      }
-    });
- 
-    form = dialog.find( "form" ).on( "submit", function( event ) {
-      event.preventDefault();
-      addUser();
-    });
- 
-    $( "#create-task" ).button().on( "click", function() {
-      dialog.dialog( "open" );
-    });
-  } );
+function handleAddTask(event){}
+    
 
 
 // Todo: create a function to handle deleting a task
@@ -253,3 +132,13 @@ function handleDrop(event, ui) {
 $(document).ready(function () {
 
 });
+
+function init(){
+    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
+    if (storedTasks !== null) {
+        taskStorage = storedTasks;
+    }       
+}
+
+
+init()
