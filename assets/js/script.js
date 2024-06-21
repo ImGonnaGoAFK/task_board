@@ -1,7 +1,17 @@
 // Retrieve tasks and nextId from localStorage
-let taskList = [JSON.parse(localStorage.getItem("tasks"))];
+let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
+function readTasksFromStorage() {
+  let tasks = JSON.parse(localStorage.getItem('tasks'));
+  console.log(tasks);
+  if (!tasks) {
+    tasks = [];
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }
+  return tasks;
+  
+}
 $( function() {
     var dialog, form,
  
@@ -22,7 +32,9 @@ $( function() {
  
  
     function addTask() {
+        let taskList = JSON.parse(localStorage.getItem("tasks"));
         let filledInput = true;
+
         if ((task.val === "") || (dueDate.val === "") || (description.val === "")) {
             alert("please make sure all fields are filled in."); 
             filledInput = false;
@@ -40,10 +52,10 @@ $( function() {
         $('#task').value = '';
         $('dueDate').value ='';
         $('#discription').value ='';
-        console.log(taskEntry);
+      
         if (filledInput) {
             taskList.push(taskEntry);
-            localStorage.setItem('tasks', JSON.stringify(taskEntry));
+            localStorage.setItem('tasks', JSON.stringify(taskList));
             dialog.dialog("close");
         }
     }
@@ -134,10 +146,7 @@ $(document).ready(function () {
 });
 
 function init(){
-    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
-    if (storedTasks !== null) {
-        taskStorage = storedTasks;
-    }       
+  readTasksFromStorage ();
 }
 
 
