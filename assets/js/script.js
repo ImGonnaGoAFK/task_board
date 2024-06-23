@@ -2,8 +2,6 @@
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
-console.log(taskList)
-
 function saveTaskstoStorage (tasks) {
   localStorage.setItem('tasks', JSON.stringify(tasks));
   renderTaskList()
@@ -24,6 +22,7 @@ function generateTaskId() {
 }
 // Todo: create a function to create a task card
 function createTaskCard(task) {
+    readTasksFromStorage();
     const taskCard = $('<div>').addClass ('card task-card draggable my-3').attr('data-task-id', task.id);
     const cardHeader = $('<div>').addClass('card-header h4').text(task.task);
     const cardBody = $('<div>').addClass('card-body');
@@ -47,6 +46,7 @@ function createTaskCard(task) {
     cardBody.append(cardDescription, cardDueDate, taskDeleteBtn);
     taskCard.append(cardHeader, cardBody);
 
+    readTasksFromStorage();
     return taskCard;
 }
 
@@ -94,6 +94,7 @@ $('.draggable').draggable({
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
+
     var dialog, form,
  
       task = $("#task"),
@@ -116,20 +117,20 @@ function handleAddTask(event){
         // let taskList = JSON.parse(localStorage.getItem("tasks"));
         let filledInput = true;
 
-        if ((task.val === "") || (dueDate.val === "") || (description.val === "")) {
-            alert("please make sure all fields are filled in."); 
-            filledInput = false;
-        }
-        else {
-            filledInput = true;
-        }
+        // if ((task.val === undefined) || (dueDate.val === undefined) || (description.val === undefined)) {
+        //     alert("please make sure all fields are filled in."); 
+        //     filledInput = false;
+        // }
+        // else {
+        //     filledInput = true;
+        // }
 
         let taskEntry = {
             id: generateTaskId(),
             task: $('#task').val(),
             dueDate: $('#dueDate').val(),
             description: $('#discription').val(),
-            status:'in-progress',
+            status:'to-do',
         };
         
         $('#task').value = '';
@@ -176,17 +177,19 @@ function handleAddTask(event){
 
 
 // Todo: create a function to handle deleting a task
-function handleDeleteTask(event){
- const taskID = $(this).attr('data-project-id');
+function handleDeleteTask(){
+ const taskID = $(this).attr('data-task-id');
  const tasks = readTasksFromStorage();
 
  tasks.forEach((task) => {
-  if (task.id === task.id) {
-    tasks.splice(tasks.indexOf(tasks), 1);
+  if (task.id === taskID) {
+    tasks.splice(tasks.indexOf(task), 1);
   }
  })
 
  saveTaskstoStorage (tasks);
+ readTasksFromStorage();
+
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
@@ -217,18 +220,11 @@ saveTaskstoStorage(tasks)
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
+  handleAddTask();
   readTasksFromStorage ();
   renderTaskList ();
-  handleAddTask();
   $('.drag-target').droppable({
     accept: '.draggable',
     drop: handleDrop,
   });
 });
-
-// function init(){
-//   readTasksFromStorage ();
-// }
-
-
-// init()
