@@ -114,16 +114,7 @@ function handleAddTask(event){
  
  
     function addTask() {
-        // let taskList = JSON.parse(localStorage.getItem("tasks"));
         let filledInput = true;
-
-        // if ((task.val === undefined) || (dueDate.val === undefined) || (description.val === undefined)) {
-        //     alert("please make sure all fields are filled in."); 
-        //     filledInput = false;
-        // }
-        // else {
-        //     filledInput = true;
-        // }
 
         let taskEntry = {
             id: generateTaskId(),
@@ -189,7 +180,6 @@ function handleDeleteTask(){
 
  saveTaskstoStorage (tasks);
  readTasksFromStorage();
-
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
